@@ -1,3 +1,5 @@
 import PyPDF2
 
 path="D:\Dev\Documents\ReleveJuillet2023"
+
+print('u')
