@@ -1,32 +1,46 @@
 import PyPDF2
-from PyPDF2 import PdfWriter
+from PyPDF2 import PdfWriter, PdfFileMerger
 import re
 
 path="D:\Dev\Documents\ReleveJuillet2023.pdf"
 
-class Upload:
 
-    def Reade () -> str:
 
-        reader = PyPDF2.PdfReader(input("Taper l'emplacement du pdf"))
+class PDFFileReader:
+    def __init__ (self, _path):
+        """_summary_
+
+        Args:
+            _path (string): 
+        """         
+        self.path = _path
+
+    def Read (self) -> str:
+
+        reader = PyPDF2.PdfReader(self.path)
         NbrPages = len(reader.pages)
+        content = ""
         for i in range(NbrPages-1):
             page = reader.pages[i]
-            page_content = page.extract_text()        
-        return page_content
+            content = content + page.extract_text()        
+        return content.splitlines()
+    
+    def ProcessToDict (self):
+        contentProcess = self.Read()
+        PDFData = {}
+        return contentProcess
+    
+    def ProcessDate (self):
+        contentProcessDate = self.Read()
+        Date = contentProcessDate[2]
+        regex = '/\d{2}\s\D{3,9}\d{4}/'
+        matches = re.finditer(regex, Date)
+        print(matches)
+
+        return
 
 
-reader = PyPDF2.PdfReader(input("Taper l'emplacement du pdf"))
-NbrPages = len(reader.pages)
-merger = PdfWriter()
-print(merger.append(fileobj=reader, pages=(0, NbrPages-1)))
-#for i in range(NbrPages-1):
- #   page = reader.pages[i]
-  #  page_content = page.extract_text()
- #   print(page_content)
-#print(page_content)
-#reader = PyPDF2.PdfReader(input("Taper l'emplacement du pdf"))
-#NbrPages = len(reader.pages)
-#writer.append
-#print(page)
-#print(Upload.Reade().extract_text())
+process = PDFFileReader(path)
+#print(process.ProcessToDict())
+process.ProcessDate()
+
