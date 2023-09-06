@@ -12,8 +12,10 @@ class PDFFileReader:
 
         Args:
             _path (string): 
-        """         
-        self.path = _path
+        """  
+        self.path = _path       
+        self.content = self.Read()
+        
 
     def Read (self) -> str:
 
@@ -22,25 +24,30 @@ class PDFFileReader:
         content = ""
         for i in range(NbrPages-1):
             page = reader.pages[i]
-            content = content + page.extract_text()        
+            content = content + page.extract_text() + "\n"
         return content.splitlines()
     
     def ProcessToDict (self):
-        contentProcess = self.Read()
-        PDFData = {}
-        return contentProcess
+        PDFData = {
+            "date" : self.ProcessDate(),
+            "virements" : []
+        }
+
+        DateVirement = r"\d{2}\/\d{2}[A-Z]"
+        for i in range(len(self.content)):
+            if re.search(DateVirement, self.content[i])!=None:
+                print(self.content[i])
+                print(self.content[i+1])                
+        return PDFData
     
     def ProcessDate (self):
-        contentProcessDate = self.Read()
-        Date = contentProcessDate[2]
-        regex = '/\d{2}\s\D{3,9}\d{4}/'
-        matches = re.finditer(regex, Date)
-        print(matches)
-
-        return
+        Date = self.content[2]
+        regex = r"\d{2}\s\D{3,9}\d{4}"
+        return re.search(regex, Date).group()
 
 
 process = PDFFileReader(path)
-#print(process.ProcessToDict())
-process.ProcessDate()
+process.ProcessToDict()
+#print(process.content)
+
 
