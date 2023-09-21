@@ -1,5 +1,6 @@
 from PyPDF2 import PdfReader
 import re
+import json
 
 path="D:\Dev\Documents\ReleveSeptembre2023.pdf"
 
@@ -78,7 +79,7 @@ f
                     PDFData["virements"].append({"montant" : entity1.group(), "entite" : entity2.group()[3:], "moyen" : "CB", "date" : entity3.group()})
                 elif entity1 != None:
                     position = re.search(r"\s", self.content[i]).span()
-                    PDFData["virements"].append({"montant" : entity1.group(), "entite" : self.content[i][position[0]:], "moyen" : self.content[i][5:position[0]], "date" : entity3.group()})       
+                    PDFData["virements"].append({"montant" : entity1.group(), "entite" : self.content[i][position[0]:], "moyen" : self.content[i][5:position[0]], "date" : entity3.group()})    
         return PDFData
     
     def ProcessDate (self):
@@ -90,10 +91,19 @@ f
         Date = self.content[2]
         regex = r"\d{2}\s\D{3,15}\d{4}"
         return re.search(regex, Date).group()
+    
+    def ExportToJson (self):
+        """
+        
+        """
+        mon_fichier = open("data.json", "w")
+        json.dump(self.ProcessToDict(),  mon_fichier, indent = 3)
+        mon_fichier.close()
+        
 
 
 process = PDFFileReader(path)
-print(process.ProcessToDict())
+process.DownloadData()
 #print(process.content)
 
 
